@@ -7,11 +7,32 @@ fn main() {
     for stream in listener.incoming(){
         match stream{
             Ok(stream) =>{
-                println!("Esta abierto y recibiendo");
+
+                match handle_client(stream){
+                    Ok(message) =>{
+                        println!("{}", message);
+                    }
+                    Err(e) =>{
+                        eprintln!("Error: {}", e);
+                    }
+                }
             }
             Err(e) =>{
                 eprintln!("Error: {}", e);
             }
         }
+    }
+}
+
+fn handle_client(mut stream: TcpStream) -> Result<String, Error>{
+
+    let mut buf = [0;1024];
+
+    loop{
+        let bytes_len = stream.read(&mut buf)?;
+        if bytes_len == 0{
+            return Ok("No se pueden leer mas bytes".to_string());
+        }
+        stream.write(&buf[..bytes_len])?;        
     }
 }
