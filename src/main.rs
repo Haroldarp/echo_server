@@ -3,6 +3,7 @@ use std::io::{Read, Write, Error};
 
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:8080").expect("No se pudo acceder al puerto");
+    println!("El servidor esta en modo listening");
 
     for stream in listener.incoming(){
         match stream{
@@ -25,6 +26,8 @@ fn main() {
 }
 
 fn handle_client(mut stream: TcpStream) -> Result<String, Error>{
+
+    println!("Se conecto el cliente con la direccion: {}", stream.peer_addr()?);
 
     let mut buf = [0;1024];
 
